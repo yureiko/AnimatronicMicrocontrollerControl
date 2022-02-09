@@ -1,0 +1,16 @@
+
+*.o
+
+*.a
+
+*.dep
+
+TivaC/Projects/AnimatronicRTOS/Debug/Obj/
+
+*.bat
+
+TivaC/settings/
+
+*.ps1
+
+*.xcl
