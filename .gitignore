@@ -14,3 +14,7 @@ TivaC/settings/
 *.ps1
 
 *.xcl
+
+TivaC/Projects/AnimatronicRTOS/Debug/Exe/
+
+*.map
