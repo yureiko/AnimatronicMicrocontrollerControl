@@ -13,7 +13,6 @@
 #include "driverlib/pwm.h"
 #include "driverlib/sysctl.h"
 
-
 void PWM_init();
 
 void PWM_set_duty(uint32_t PWMBase, uint32_t PWMOut, float duty); //recebe o duty cycle

@@ -1,20 +1,22 @@
 #include "PWM_funcs.h"
+#include "driverlib/rom.h"
 
-#define PWM_FREQUENCY 50
+#define PWM_FREQUENCY 50.0
 #define DEFINED_SYSTEM_CLOCK 120000000UL
-#define PWM_N_PARAMETER ((uint32_t)(1.0/PWM_FREQUENCY) * DEFINED_SYSTEM_CLOCK)
+#define PWM_N_PARAMETER ((uint32_t)((DEFINED_SYSTEM_CLOCK/64.0)*(1.0/PWM_FREQUENCY)))
 
 void PWM_init()
-{  
-    //
-    // Set the PWM clock to the system clock.
-    //
-    SysCtlPWMClockSet(SYSCTL_PWMDIV_1);
-
+{      
     //
     // The PWM peripheral must be enabled for use.
     //
     SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM0);
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM1);
+    
+    //
+    // Set the PWM clock to the system clock.
+    //
+    PWMClockSet(PWM0_BASE, PWM_SYSCLK_DIV_64);
 
     //
     // Set GPIO enable
@@ -120,6 +122,7 @@ void PWM_init()
     PWMOutputState(PWM0_BASE, PWM_OUT_5_BIT, true);
     PWMOutputState(PWM0_BASE, PWM_OUT_6_BIT, true);
     PWMOutputState(PWM0_BASE, PWM_OUT_7_BIT, true);
+      
 }
 
 void PWM_set_duty(uint32_t PWMBase, uint32_t PWMOut, float duty)
