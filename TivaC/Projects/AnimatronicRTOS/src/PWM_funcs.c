@@ -1,7 +1,6 @@
 #include "PWM_funcs.h"
 #include "driverlib/rom.h"
 
-#define PWM_FREQUENCY 50.0
 #define DEFINED_SYSTEM_CLOCK 120000000UL
 #define PWM_N_PARAMETER ((uint32_t)((DEFINED_SYSTEM_CLOCK/64.0)*(1.0/PWM_FREQUENCY)))
 
@@ -125,7 +124,7 @@ void PWM_init()
       
 }
 
-void PWM_set_duty(uint32_t PWMBase, uint32_t PWMOut, float duty)
+void PWM_set_duty(uint32_t PWMOut, float duty)
 {
   uint32_t PWMGen;
     
@@ -150,9 +149,7 @@ void PWM_set_duty(uint32_t PWMBase, uint32_t PWMOut, float duty)
     return;
   }
   
-  PWMPulseWidthSet(PWMBase, PWMOut,
-                     (uint32_t)(PWMGenPeriodGet(PWMBase, PWMGen)*(duty/100.0)));
-//  PWMPulseWidthSet(PWM0_BASE, PWM_OUT_2,
-//                     (uint32_t)(PWMGenPeriodGet(PWM0_BASE, PWM_GEN_1)*(duty/100.0)));
+  PWMPulseWidthSet(PWM0_BASE, PWMOut,
+                     (uint32_t)(PWMGenPeriodGet(PWM0_BASE, PWMGen)*(duty/100.0)));
   
 }

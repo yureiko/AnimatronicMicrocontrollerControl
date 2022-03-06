@@ -8,6 +8,7 @@
 #include "cmsis_os2.h" // CMSIS-RTOS
 #include "UART_funcs.h"  //UART functions
 #include "PWM_funcs.h"  //PWM functions 
+#include "servo_funcs.h"
 //#include "inc/hw_memmap.h"
 
 #define MSGQUEUE_OBJECTS      5 //quantidade de mensagens na fila

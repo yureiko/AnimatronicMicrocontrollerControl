@@ -2132,6 +2132,12 @@
         <name>$PROJ_DIR$\src\rtx_lib.c</name>
     </file>
     <file>
+        <name>$PROJ_DIR$\src\servo_funcs.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\src\servo_funcs.h</name>
+    </file>
+    <file>
         <name>$PROJ_DIR$\src\startup_tm4c1294.s</name>
     </file>
     <file>
