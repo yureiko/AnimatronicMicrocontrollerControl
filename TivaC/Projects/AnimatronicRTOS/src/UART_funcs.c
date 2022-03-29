@@ -29,7 +29,7 @@ void UART_init()
     GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
 
     //
-    // Configure the UART for 300, 8-E-1 operation.
+    // Configure the UART for 115200, 8-E-1 operation.
     //
     
     UARTConfigSetExpClk(UART0_BASE, SystemCoreClock, 115200,

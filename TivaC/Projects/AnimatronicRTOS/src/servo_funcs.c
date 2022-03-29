@@ -19,7 +19,7 @@ void servo_set_position(servo_struct *servo, float pos)
   PWM_set_duty(servo->pwm_id, servo_deg_to_duty_cycle(pos));
 }
 
-servo_struct *servo_initialize(char *id, uint32_t pwm_id)
+servo_struct* servo_initialize(char *id, uint32_t pwm_id)
 {
   servo_struct *new_servo = NULL;
   

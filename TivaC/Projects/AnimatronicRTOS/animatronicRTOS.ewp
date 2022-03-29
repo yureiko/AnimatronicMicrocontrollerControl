@@ -2152,4 +2152,10 @@
     <file>
         <name>$PROJ_DIR$\src\UART_funcs.h</name>
     </file>
+    <file>
+        <name>$PROJ_DIR$\src\UART_thread.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\src\UART_thread.h</name>
+    </file>
 </project>

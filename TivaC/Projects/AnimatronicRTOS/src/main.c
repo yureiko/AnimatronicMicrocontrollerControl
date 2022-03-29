@@ -9,6 +9,7 @@
 #include "UART_funcs.h"  //UART functions
 #include "PWM_funcs.h"  //PWM functions 
 #include "servo_funcs.h"
+#include "UART_thread.h"
 //#include "inc/hw_memmap.h"
 
 #define MSGQUEUE_OBJECTS      5 //quantidade de mensagens na fila
@@ -16,19 +17,6 @@
 osThreadId_t UART_thread_id, PWM_thread_id;
 
 osMessageQueueId_t DutyCycle_msg;
-
-void UART_thread(void *arg)
-{
-  osStatus_t status;
-
-  while(1)
-  {
-    while(UART_char_available())                                
-    {      
-        osDelay(500);
-    }
-  }
-}
 
 void PWM_thread(void *arg)
 {
