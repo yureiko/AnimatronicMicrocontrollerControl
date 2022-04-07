@@ -1,7 +1,9 @@
 #include "PWM_funcs.h"
 #include "driverlib/rom.h"
 
-#define DEFINED_SYSTEM_CLOCK 120000000UL
+#define DEFINED_SYSTEM_CLOCK SystemCoreClock
+extern uint32_t SystemCoreClock;
+
 #define PWM_N_PARAMETER ((uint32_t)((DEFINED_SYSTEM_CLOCK/64.0)*(1.0/PWM_FREQUENCY)))
 
 void PWM_init()

@@ -1,15 +1,17 @@
-//Funções do periférico ADC
+//Funï¿½ï¿½es do perifï¿½rico ADC
 //Autor: Yuri Andreiko
 //Data: 02/07/19
 
 #ifndef UART_FUNCS_H
 #define	UART_FUNCS_H
 
+#include <stdint.h>
+
 void UART_init();
 
 //
-//UART Send byte -> definido com função "No Blocking" //TALVEZ ALTERAR****
-//Parâmetros:
+//UART Send byte -> definido com funï¿½ï¿½o "No Blocking" //TALVEZ ALTERAR****
+//Parï¿½metros:
 //      *pui8buffer: ponteiro de vetor de bytes
 //      ui32Count: tamanho do vetor de bytes
 //

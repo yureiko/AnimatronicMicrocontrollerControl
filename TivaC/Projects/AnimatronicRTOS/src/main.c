@@ -9,8 +9,7 @@
 #include "UART_funcs.h"  //UART functions
 #include "PWM_funcs.h"  //PWM functions 
 #include "servo_funcs.h"
-#include "UART_thread.h"
-//#include "inc/hw_memmap.h"
+#include "communication.h"
 
 #define MSGQUEUE_OBJECTS      5 //quantidade de mensagens na fila
 
@@ -22,12 +21,17 @@ void PWM_thread(void *arg)
 {
   float duty_cycle;
   osStatus_t status;
+
+  servo_struct *servo_0 = servo_initialize("servo 0", PWM_OUT_1, 0.0);
+  servo_set_position(servo_0,0);
+
   while(1) {
-    status = osMessageQueueGet(DutyCycle_msg, &duty_cycle, NULL, 1);  // wait for message
+
+    /*status = osMessageQueueGet(DutyCycle_msg, &duty_cycle, NULL, 1);  // wait for message
     if (status == osOK) {
       
         //PWM_set_duty(duty_cycle);
-    }
+    }*/
   } 
 }
 
@@ -38,7 +42,7 @@ void main(void){
 
   osKernelInitialize();
   
-  UART_thread_id = osThreadNew(UART_thread, NULL, NULL);
+  UART_thread_id = osThreadNew(UART_task, NULL, NULL);
   PWM_thread_id = osThreadNew(PWM_thread, NULL, NULL);
   
   DutyCycle_msg = osMessageQueueNew(MSGQUEUE_OBJECTS, sizeof(float), NULL);

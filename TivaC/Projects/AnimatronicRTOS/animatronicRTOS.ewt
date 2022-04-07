@@ -2370,6 +2370,12 @@
         </settings>
     </configuration>
     <file>
+        <name>$PROJ_DIR$\src\communication.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\src\communication.h</name>
+    </file>
+    <file>
         <name>$PROJ_DIR$\..\..\TivaWare_C_Series-2.1.4.178\driverlib\ewarm\Exe\driverlib.a</name>
     </file>
     <file>
@@ -2413,11 +2419,5 @@
     </file>
     <file>
         <name>$PROJ_DIR$\src\UART_funcs.h</name>
-    </file>
-    <file>
-        <name>$PROJ_DIR$\src\UART_thread.c</name>
-    </file>
-    <file>
-        <name>$PROJ_DIR$\src\UART_thread.h</name>
     </file>
 </project>

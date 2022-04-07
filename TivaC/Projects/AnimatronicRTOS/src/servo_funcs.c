@@ -3,11 +3,11 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define SERVO_MIN_POSITION -90.0                // -90 degrees
-#define SERVO_MAX_POSITION 90.0                 // 90 degrees
+#define SERVO_MIN_POSITION 0                    // 0 degrees
+#define SERVO_MAX_POSITION 180.0                 // 180 degrees
 
-#define SERVO_MIN_DUTY_CYCLE_PERIOD_MS 1        // 1ms
-#define SERVO_MAX_DUTY_CYCLE_PERIOD_MS 2        // 2ms
+#define SERVO_MIN_DUTY_CYCLE_PERIOD_MS 0.5      // 0.5ms
+#define SERVO_MAX_DUTY_CYCLE_PERIOD_MS 2.4      // 2.4ms
 
 /******************************************************************************
 * Local prototypes
@@ -19,7 +19,7 @@ void servo_set_position(servo_struct *servo, float pos)
   PWM_set_duty(servo->pwm_id, servo_deg_to_duty_cycle(pos));
 }
 
-servo_struct* servo_initialize(char *id, uint32_t pwm_id)
+servo_struct* servo_initialize(char *id, uint32_t pwm_id, float default_position)
 {
   servo_struct *new_servo = NULL;
   
@@ -27,6 +27,7 @@ servo_struct* servo_initialize(char *id, uint32_t pwm_id)
   
   strcpy(new_servo->id, id);
   new_servo->pwm_id = pwm_id;
+  new_servo->default_position = default_position;
 
   return new_servo;
 }
@@ -34,7 +35,7 @@ servo_struct* servo_initialize(char *id, uint32_t pwm_id)
 float servo_deg_to_duty_cycle(float pos)
 {
   float duty;
-  float period_ms;
+  static float period_ms;
   
   period_ms = SERVO_MIN_DUTY_CYCLE_PERIOD_MS + ((pos - SERVO_MIN_POSITION)  * 
                       ((float)(SERVO_MAX_DUTY_CYCLE_PERIOD_MS - SERVO_MIN_DUTY_CYCLE_PERIOD_MS)) /
