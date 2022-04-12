@@ -14,8 +14,11 @@
 #define MSGQUEUE_OBJECTS      5 //quantidade de mensagens na fila
 
 osThreadId_t UART_thread_id, PWM_thread_id;
+osThreadId_t Servo_1_thread_id, Servo_2_thread_id;
 
 osMessageQueueId_t DutyCycle_msg;
+osMessageQueueId_t Servo1Position_msg;
+osMessageQueueId_t Servo2Position_msg;
 
 void PWM_thread(void *arg)
 {
@@ -35,6 +38,25 @@ void PWM_thread(void *arg)
   } 
 }
 
+void Servo1_thread(void *arg)
+{
+  float servo_pos;
+  servo_struct *servo = servo_initialize("servo 0", PWM_OUT_1, 90.0);
+  servo_set_position(servo, servo->default_position);
+
+  osStatus_t status;
+
+  while(1)
+  {
+    status = osMessageQueueGet(Servo1Position_msg, &servo_pos, NULL, 1);
+
+    if (status == osOK) 
+    {
+        servo_set_position(servo, servo_pos);
+    }
+  }
+}
+
 void main(void){
   SystemInit();
   UART_init();
@@ -44,8 +66,14 @@ void main(void){
   
   UART_thread_id = osThreadNew(UART_task, NULL, NULL);
   PWM_thread_id = osThreadNew(PWM_thread, NULL, NULL);
+
+  Servo_1_thread_id = PWM_thread_id = osThreadNew(Servo1_thread, NULL, NULL);
+  //Servo_2_thread_id = PWM_thread_id = osThreadNew(Servo2_thread, NULL, NULL);
   
   DutyCycle_msg = osMessageQueueNew(MSGQUEUE_OBJECTS, sizeof(float), NULL);
+
+  Servo1Position_msg = osMessageQueueNew(MSGQUEUE_OBJECTS, sizeof(float), NULL);
+  Servo2Position_msg = osMessageQueueNew(MSGQUEUE_OBJECTS, sizeof(float), NULL);
 
   if(osKernelGetState() == osKernelReady)
     osKernelStart();
