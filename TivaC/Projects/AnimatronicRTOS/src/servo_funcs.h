@@ -3,15 +3,14 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include "cmsis_os2.h" // CMSIS-RTOS
 
-typedef struct{
-  char id[8];
-  uint32_t pwm_id;
-  float default_position;
-}servo_struct;
+typedef struct
+{
+  uint8_t size;
+  uint8_t *data;
+}servo_message_t;
 
-void servo_set_position(servo_struct *servo, float pos);
-
-servo_struct *servo_initialize(char *id, uint32_t pwm_id, float default_position);
+void servos_thread_init();
 
 #endif

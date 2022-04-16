@@ -20,3 +20,5 @@ TivaC/Projects/AnimatronicRTOS/Debug/Exe/
 *.map
 
 TivaC/Projects/AnimatronicRTOS/settings/
+
+TivaC/Projects/AnimatronicRTOS/.vscode/
