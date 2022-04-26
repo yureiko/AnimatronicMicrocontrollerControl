@@ -6,13 +6,15 @@ extern uint32_t SystemCoreClock;
 
 #define PWM_N_PARAMETER ((uint32_t)((DEFINED_SYSTEM_CLOCK/64.0)*(1.0/PWM_FREQUENCY)))
 
+uint32_t g_pwm_n_parameter;
+
 void PWM_init()
-{      
+{     
+    g_pwm_n_parameter = PWM_N_PARAMETER;
     //
     // The PWM peripheral must be enabled for use.
     //
     SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM0);
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM1);
     
     //
     // Set the PWM clock to the system clock.
@@ -57,9 +59,7 @@ void PWM_init()
     GPIOPinTypePWM(GPIO_PORTK_BASE, GPIO_PIN_5);
 
     //
-    // Configure the PWM0 to count up/down without synchronization.
-    // Note: Enabling the dead-band generator automatically couples the 2
-    // outputs from the PWM block so we don't use the PWM synchronization.
+    // Configure the PWM0 to count down without synchronization.
     //
     PWMGenConfigure(PWM0_BASE, PWM_GEN_0, PWM_GEN_MODE_UP_DOWN |
                     PWM_GEN_MODE_NO_SYNC);
@@ -73,6 +73,12 @@ void PWM_init()
     PWMGenConfigure(PWM0_BASE, PWM_GEN_3, PWM_GEN_MODE_UP_DOWN |
                     PWM_GEN_MODE_NO_SYNC);
 
+
+    PWMDeadBandDisable(PWM0_BASE, PWM_GEN_0);
+    PWMDeadBandDisable(PWM0_BASE, PWM_GEN_1);
+    PWMDeadBandDisable(PWM0_BASE, PWM_GEN_2);
+    PWMDeadBandDisable(PWM0_BASE, PWM_GEN_3);
+
     //
     // Set the PWM period.  To calculate the appropriate parameter
     // use the following equation: N = (1 / f) * SysClk.  Where N is the
@@ -80,10 +86,10 @@ void PWM_init()
     // system clock frequency. Note that
     // the maximum period you can set is 2^16 - 1.
     //
-    PWMGenPeriodSet(PWM0_BASE, PWM_GEN_0, PWM_N_PARAMETER);
-    PWMGenPeriodSet(PWM0_BASE, PWM_GEN_1, PWM_N_PARAMETER);
-    PWMGenPeriodSet(PWM0_BASE, PWM_GEN_2, PWM_N_PARAMETER);
-    PWMGenPeriodSet(PWM0_BASE, PWM_GEN_3, PWM_N_PARAMETER);
+    PWMGenPeriodSet(PWM0_BASE, PWM_GEN_0, g_pwm_n_parameter);
+    PWMGenPeriodSet(PWM0_BASE, PWM_GEN_1, g_pwm_n_parameter);
+    PWMGenPeriodSet(PWM0_BASE, PWM_GEN_2, g_pwm_n_parameter);
+    PWMGenPeriodSet(PWM0_BASE, PWM_GEN_3, g_pwm_n_parameter);
 
     //
     // Set PWM duty cycle.  You set the duty cycle as a
@@ -114,6 +120,7 @@ void PWM_init()
     PWMGenEnable(PWM0_BASE, PWM_GEN_1);
     PWMGenEnable(PWM0_BASE, PWM_GEN_2);
     PWMGenEnable(PWM0_BASE, PWM_GEN_3);
+
     
     PWMOutputState(PWM0_BASE, PWM_OUT_0_BIT, true);
     PWMOutputState(PWM0_BASE, PWM_OUT_1_BIT, true);
@@ -129,7 +136,7 @@ void PWM_init()
 void PWM_set_duty(uint32_t PWMOut, float duty)
 {
   uint32_t PWMGen;
-    
+  
   if(PWMOut == PWM_OUT_0 || PWMOut == PWM_OUT_1)
   {
     PWMGen = PWM_GEN_0;
@@ -152,6 +159,12 @@ void PWM_set_duty(uint32_t PWMOut, float duty)
   }
   
   PWMPulseWidthSet(PWM0_BASE, PWMOut,
-                     (uint32_t)(PWMGenPeriodGet(PWM0_BASE, PWMGen)*(duty/100.0)));
+                     (uint32_t)(g_pwm_n_parameter*(duty/100.0)));
   
+}
+
+void PWM_synchronyze()
+{
+  PWMSyncUpdate(PWM0_BASE, PWM_GEN_0_BIT | PWM_GEN_1_BIT | PWM_GEN_2_BIT | PWM_GEN_3_BIT);
+  PWMSyncTimeBase(PWM0_BASE, PWM_GEN_0_BIT | PWM_GEN_1_BIT | PWM_GEN_2_BIT | PWM_GEN_3_BIT);
 }

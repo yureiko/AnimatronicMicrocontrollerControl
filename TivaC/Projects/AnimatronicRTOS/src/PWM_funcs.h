@@ -19,4 +19,6 @@ void PWM_init();
 
 void PWM_set_duty(uint32_t PWMOut, float duty); //recebe o duty cycle
 
+void PWM_synchronyze();
+
 #endif

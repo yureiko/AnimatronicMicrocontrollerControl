@@ -11,7 +11,7 @@
 #include "servo_funcs.h"
 #include "communication.h"
 
-osThreadId_t UART_thread_id, PWM_thread_id;
+osThreadId_t UART_thread_id;
 
 void main(void){
   SystemInit();
