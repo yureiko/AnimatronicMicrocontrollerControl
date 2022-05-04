@@ -34,7 +34,8 @@ void UART_init()
     
     UARTConfigSetExpClk(UART0_BASE, SystemCoreClock, 115200,
                             (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE |
-                             UART_CONFIG_PAR_NONE));
+                             UART_CONFIG_PAR_EVEN));
+    
 }
 
 void UART_send_byte(const uint8_t *pui8Buffer, uint32_t ui32Count)

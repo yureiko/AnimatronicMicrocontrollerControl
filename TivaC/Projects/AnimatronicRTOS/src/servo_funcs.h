@@ -8,7 +8,7 @@
 typedef struct
 {
   uint8_t size;
-  uint8_t *data;
+  uint8_t data[16];
 }servo_message_t;
 
 void servos_thread_init();

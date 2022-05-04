@@ -100,8 +100,8 @@ void servo_main_task(void *arg)
   servo_list[SERVO_EYES_Y] = servo_initialize(SERVO_EYES_Y, "eyes_y", PWM_OUT_1, 90.f);
 
   // Eyelids
-  servo_list[SERVO_EYELIDS_S] = servo_initialize(SERVO_EYELIDS_S, "eyelids_s", PWM_OUT_2, 0.f);
-  servo_list[SERVO_EYELIDS_I] = servo_initialize(SERVO_EYELIDS_I, "eyelids_i", PWM_OUT_3, 0.f);
+  servo_list[SERVO_EYELIDS_S] = servo_initialize(SERVO_EYELIDS_S, "eyelids_s", PWM_OUT_2, 90.f);
+  servo_list[SERVO_EYELIDS_I] = servo_initialize(SERVO_EYELIDS_I, "eyelids_i", PWM_OUT_3, 90.f);
 
   // Eyebrows
   servo_list[SERVO_EYEBROWS_L] = servo_initialize(SERVO_EYEBROWS_L, "eyebrows_l", PWM_OUT_4, 90.f);
@@ -143,22 +143,22 @@ void servo_main_task(void *arg)
         break;
 
         case ID_MOVE_EYES:
-          servo_list[SERVO_EYES_X]->position = (float) ((0x000000FF & data[2] | 0x0000FF00 & data[3] << 8))/100.0;
-          servo_list[SERVO_EYES_Y]->position = (float) ((0x000000FF & data[4] | 0x0000FF00 & data[5] << 8))/100.0;
+          servo_list[SERVO_EYES_X]->position = (float) ((0x000000FF & data[1] | 0x0000FF00 & data[2] << 8))/100.0;
+          servo_list[SERVO_EYES_Y]->position = (float) ((0x000000FF & data[3] | 0x0000FF00 & data[4] << 8))/100.0;
           servo_set_position(servo_list[SERVO_EYES_X]);
           servo_set_position(servo_list[SERVO_EYES_Y]);
         break;
 
         case ID_MOVE_EYELIDS:
-          servo_list[SERVO_EYELIDS_S]->position = (float) ((0x000000FF & data[2] | 0x0000FF00 & data[3] << 8))/100.0;
-          servo_list[SERVO_EYELIDS_I]->position = (float) ((0x000000FF & data[4] | 0x0000FF00 & data[5] << 8))/100.0;
+          servo_list[SERVO_EYELIDS_S]->position = (float) ((0x000000FF & data[1] | 0x0000FF00 & data[2] << 8))/100.0;
+          servo_list[SERVO_EYELIDS_I]->position = (float) ((0x000000FF & data[3] | 0x0000FF00 & data[4] << 8))/100.0;
           servo_set_position(servo_list[SERVO_EYELIDS_S]);
           servo_set_position(servo_list[SERVO_EYELIDS_I]);
         break;
 
         case ID_MOVE_EYEBROWS:
-          servo_list[SERVO_EYEBROWS_L]->position = (float) ((0x000000FF & data[2] | 0x0000FF00 & data[3] << 8))/100.0;
-          servo_list[SERVO_EYEBROWS_R]->position = (float) ((0x000000FF & data[4] | 0x0000FF00 & data[5] << 8))/100.0;
+          servo_list[SERVO_EYEBROWS_L]->position = (float) ((0x000000FF & data[1] | 0x0000FF00 & data[2] << 8))/100.0;
+          servo_list[SERVO_EYEBROWS_R]->position = (float) ((0x000000FF & data[3] | 0x0000FF00 & data[4] << 8))/100.0;
           servo_set_position(servo_list[SERVO_EYEBROWS_L]);
           servo_set_position(servo_list[SERVO_EYEBROWS_R]);
         break;
