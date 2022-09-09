@@ -108,7 +108,7 @@ void servo_main_task(void *arg)
   servo_list[SERVO_EYEBROWS_R] = servo_initialize(SERVO_EYEBROWS_R, "eyebrows_i", PWM_OUT_5, 90.f);
 
   // Mouth
-  servo_list[SERVO_MOUTH] = servo_initialize(SERVO_MOUTH, "mouth", PWM_OUT_6, 90.f);
+  servo_list[SERVO_MOUTH] = servo_initialize(SERVO_MOUTH, "mouth", PWM_OUT_6, 0.f);
 
   // Ears
   servo_list[SERVO_EARS] = servo_initialize(SERVO_EARS, "ears", PWM_OUT_7, 90.f);
@@ -163,7 +163,9 @@ void servo_main_task(void *arg)
           servo_set_position(servo_list[SERVO_EYEBROWS_R]);
         break;
 
-        case ID_MOVE_MOUTH:  
+        case ID_MOVE_MOUTH: 
+          servo_list[SERVO_MOUTH]->position = (float) ((0x000000FF & data[1] | 0x0000FF00 & data[2] << 8))/100.0;
+          servo_set_position(servo_list[SERVO_MOUTH]); 
         break;
 
         case ID_MOVE_EARS:

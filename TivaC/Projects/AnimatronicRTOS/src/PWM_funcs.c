@@ -8,6 +8,8 @@ extern uint32_t SystemCoreClock;
 
 uint32_t g_pwm_n_parameter;
 
+static void delayTicks(uint32_t ticks);
+
 void PWM_init()
 {     
     g_pwm_n_parameter = PWM_N_PARAMETER;
@@ -123,14 +125,21 @@ void PWM_init()
 
     
     PWMOutputState(PWM0_BASE, PWM_OUT_0_BIT, true);
+    delayTicks(100);
     PWMOutputState(PWM0_BASE, PWM_OUT_1_BIT, true);
+    delayTicks(100);
     PWMOutputState(PWM0_BASE, PWM_OUT_2_BIT, true);
+    delayTicks(100);
     PWMOutputState(PWM0_BASE, PWM_OUT_3_BIT, true);
+    delayTicks(100);
     PWMOutputState(PWM0_BASE, PWM_OUT_4_BIT, true);
+    delayTicks(100);
     PWMOutputState(PWM0_BASE, PWM_OUT_5_BIT, true);
+    delayTicks(100);
     PWMOutputState(PWM0_BASE, PWM_OUT_6_BIT, true);
+    delayTicks(100);
     PWMOutputState(PWM0_BASE, PWM_OUT_7_BIT, true);
-      
+    delayTicks(100);
 }
 
 void PWM_set_duty(uint32_t PWMOut, float duty)
@@ -167,4 +176,12 @@ void PWM_synchronyze()
 {
   PWMSyncUpdate(PWM0_BASE, PWM_GEN_0_BIT | PWM_GEN_1_BIT | PWM_GEN_2_BIT | PWM_GEN_3_BIT);
   PWMSyncTimeBase(PWM0_BASE, PWM_GEN_0_BIT | PWM_GEN_1_BIT | PWM_GEN_2_BIT | PWM_GEN_3_BIT);
+}
+
+void delayTicks(uint32_t ticks)
+{
+  while(ticks)
+  {
+    ticks--;
+  }
 }
