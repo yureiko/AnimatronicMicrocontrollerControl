@@ -14,7 +14,7 @@ typedef enum{
   WAITING_PAYLOAD_CHAR,
   WAITING_DATA_CHAR,
   WAITING_FIRST_END_CHAR,
-  WAINTING_SECOND_END_CHAR
+  WAITING_SECOND_END_CHAR
 } protocol_communication_state_t;
 
 void process_received_data_task(void *arg);
@@ -109,7 +109,7 @@ void UART_task(void *arg)
           {
              if(data_buffer == END_MESSAGE_FLAG)
             {
-              state = WAINTING_SECOND_END_CHAR;
+              state = WAITING_SECOND_END_CHAR;
             }
             else
             {
@@ -118,7 +118,7 @@ void UART_task(void *arg)
             break;
           }
 
-          case WAINTING_SECOND_END_CHAR:
+          case WAITING_SECOND_END_CHAR:
           {
             if(data_buffer == END_MESSAGE_FLAG)
             {
@@ -130,6 +130,9 @@ void UART_task(void *arg)
 
             break;
           }
+          default:
+            state = WAITING_FIRST_HEAD_CHAR;
+          break;
        }    
     }
   }
