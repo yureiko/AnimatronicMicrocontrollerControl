@@ -1,7 +1,3 @@
-//Fun��es do perif�rico ADC
-//Autor: Yuri Andreiko
-//Data: 02/07/19
-
 #ifndef UART_FUNCS_H
 #define	UART_FUNCS_H
 
@@ -9,15 +5,9 @@
 
 void UART_init();
 
-//
-//UART Send byte -> definido com fun��o "No Blocking" //TALVEZ ALTERAR****
-//Par�metros:
-//      *pui8buffer: ponteiro de vetor de bytes
-//      ui32Count: tamanho do vetor de bytes
-//
 void UART_send_byte(const uint8_t *pui8Buffer, uint32_t ui32Count);
 
-extern uint32_t SystemCoreClock;        //Clock do uC, definido em sysctl.h
+extern uint32_t SystemCoreClock; 
 
 uint8_t UART_char_available();
 

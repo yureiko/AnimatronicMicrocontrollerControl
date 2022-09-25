@@ -23,7 +23,7 @@ typedef enum
   SERVO_EYEBROWS_L,
   SERVO_EYEBROWS_R,
   SERVO_MOUTH,
-  SERVO_EARS
+  SERVO_RESERVED
 }servo_names_t;
 
 typedef struct
@@ -110,13 +110,14 @@ void servo_main_task(void *arg)
   // Mouth
   servo_list[SERVO_MOUTH] = servo_initialize(SERVO_MOUTH, "mouth", PWM_OUT_6, 0.f);
 
-  // Ears
-  servo_list[SERVO_EARS] = servo_initialize(SERVO_EARS, "ears", PWM_OUT_7, 90.f);
+  // Reserved for future purposes
+  servo_list[SERVO_RESERVED] = servo_initialize(SERVO_RESERVED, "reserved", PWM_OUT_7, 90.f);
 
   osStatus_t status;
 
   while(1)
   {
+    // Wait for a new servo message
     status = osMessageQueueGet(servo_main_thread_msg, &servo_message, NULL, osWaitForever);
 
     if (status == osOK) 
@@ -134,12 +135,26 @@ void servo_main_task(void *arg)
         break;
 
         case ID_SET_DEFAULT_SERVO_POSITION: 
+          if(data[1] < NUM_SERVOS)
+          {
+            servo_list[data[1]]->default_position = (float) ((0x000000FF & data[2] | 0x0000FF00 & data[3] << 8))/100.0;
+          }
         break; 
 
         case ID_RESET_SERVO_POSITION:
+          if(data[1] < NUM_SERVOS)
+          {
+            servo_list[data[1]]->position = (float) servo_list[data[1]]->default_position;
+            servo_set_position(servo_list[data[1]]);
+          }
         break;          
 
         case ID_RESET_ALL_SERVOS_TO_DEFAULT_POSITION:
+          for(int i = 0; i < NUM_SERVOS; i++)
+          {
+            servo_list[i]->position = (float) servo_list[i]->default_position;
+            servo_set_position(servo_list[i]);
+          }
         break;
 
         case ID_MOVE_EYES:
@@ -166,9 +181,6 @@ void servo_main_task(void *arg)
         case ID_MOVE_MOUTH: 
           servo_list[SERVO_MOUTH]->position = (float) ((0x000000FF & data[1] | 0x0000FF00 & data[2] << 8))/100.0;
           servo_set_position(servo_list[SERVO_MOUTH]); 
-        break;
-
-        case ID_MOVE_EARS:
         break;
 
         default:

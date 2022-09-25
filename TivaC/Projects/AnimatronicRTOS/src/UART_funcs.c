@@ -14,16 +14,14 @@
 void UART_init()
 {
     //
-    // Enable the peripherals used by this example.
+    // Enable the peripherals
     //
-    
     SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
 
     //
     // Set GPIO UART pins.
     //
-    
     GPIOPinConfigure(GPIO_PA0_U0RX);
     GPIOPinConfigure(GPIO_PA1_U0TX);
     GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
@@ -31,7 +29,6 @@ void UART_init()
     //
     // Configure the UART for 115200, 8-E-1 operation.
     //
-    
     UARTConfigSetExpClk(UART0_BASE, SystemCoreClock, 115200,
                             (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE |
                              UART_CONFIG_PAR_EVEN));
