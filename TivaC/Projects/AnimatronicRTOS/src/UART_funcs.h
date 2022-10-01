@@ -5,13 +5,19 @@
 
 void UART_init();
 
-void UART_send_byte(const uint8_t *pui8Buffer, uint32_t ui32Count);
 
 extern uint32_t SystemCoreClock; 
 
-uint8_t UART_char_available();
+void UART0_send_byte(const uint8_t *pui8Buffer, uint32_t ui32Count);
 
-int32_t UART_get_byte();
+uint8_t UART0_char_available();
 
+int32_t UART0_get_byte();
+
+void UART1_send_byte(const uint8_t *pui8Buffer, uint32_t ui32Count);
+
+uint8_t UART1_char_available();
+
+int32_t UART1_get_byte();
 
 #endif

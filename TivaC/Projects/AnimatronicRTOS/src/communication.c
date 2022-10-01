@@ -43,9 +43,9 @@ void UART_task(void *arg)
   while(1)
   {
     // If there is data to be read
-    if(UART_char_available())
+    if(UART1_char_available())
     {
-       data_buffer = (uint8_t)(UART_get_byte() & 0x000000FF);
+       data_buffer = (uint8_t)(UART1_get_byte() & 0x000000FF);
       
        switch(state)
        {
