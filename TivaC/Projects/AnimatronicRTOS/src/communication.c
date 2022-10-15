@@ -19,10 +19,9 @@ typedef enum{
 
 void process_received_data_task(void *arg);
 
-osMessageQueueId_t CommunicationData_msg;
 osThreadId_t CommunicationData_thread;
 
-extern osMessageQueueId_t servo_main_thread_msg;
+extern osMessageQueueId_t servo_message_queue;
 
 typedef struct
 {
@@ -135,7 +134,7 @@ void UART_task(void *arg)
             {
               // Second ending char is valid, send the buffered message in the queue
               servo_message.size = payload_size;
-              osMessageQueuePut(servo_main_thread_msg, &servo_message, 0, NULL);
+              osMessageQueuePut(servo_message_queue, &servo_message, 0, NULL);
             }
 
             // Back to first state

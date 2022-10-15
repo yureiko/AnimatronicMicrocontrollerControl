@@ -39,7 +39,7 @@ typedef struct
 * Local prototypes
 ******************************************************************************/
 osThreadId_t servo_main_thread_id;
-osMessageQueueId_t servo_main_thread_msg;
+osMessageQueueId_t servo_message_queue;
 
 float servo_deg_to_duty_cycle(float pos);
 void servo_set_position(servo_struct_t *servo);
@@ -50,7 +50,7 @@ void servo_main_task(void *arg);
 void servos_thread_init()
 {
     servo_main_thread_id = osThreadNew(servo_main_task, NULL, NULL);
-    servo_main_thread_msg = osMessageQueueNew(MSGQUEUE_OBJECTS, sizeof(servo_message_t), NULL);
+    servo_message_queue = osMessageQueueNew(MSGQUEUE_OBJECTS, sizeof(servo_message_t), NULL);
 }
 
 void servo_set_position(servo_struct_t *servo)
@@ -118,7 +118,7 @@ void servo_main_task(void *arg)
   while(1)
   {
     // Wait for a new servo message
-    status = osMessageQueueGet(servo_main_thread_msg, &servo_message, NULL, osWaitForever);
+    status = osMessageQueueGet(servo_message_queue, &servo_message, NULL, osWaitForever);
 
     if (status == osOK) 
     {
