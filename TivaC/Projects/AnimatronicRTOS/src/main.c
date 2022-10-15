@@ -11,8 +11,6 @@
 #include "servo_funcs.h"
 #include "communication.h"
 
-osThreadId_t UART_thread_id;
-
 void main(void){
   SystemInit();
   UART_init();
@@ -20,8 +18,7 @@ void main(void){
 
   osKernelInitialize();
   servos_thread_init();
-  
-  UART_thread_id = osThreadNew(UART_task, NULL, NULL);
+  communication_thread_init();
 
   if(osKernelGetState() == osKernelReady)
     osKernelStart();

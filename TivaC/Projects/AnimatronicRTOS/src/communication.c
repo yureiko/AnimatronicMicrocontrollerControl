@@ -17,9 +17,8 @@ typedef enum{
   WAITING_SECOND_END_CHAR
 } protocol_communication_state_t;
 
-void process_received_data_task(void *arg);
-
-osThreadId_t CommunicationData_thread;
+osThreadId_t UART0_thread_id;
+osThreadId_t UART1_thread_id;
 
 extern osMessageQueueId_t servo_message_queue;
 
@@ -29,124 +28,172 @@ typedef struct
   uint8_t *msg;
 }Communication_data_struct;
 
-void UART_task(void *arg)
-{
-  // Initializes task variables
-  uint8_t data_buffer = 0x00;
-  uint8_t payload_size = 0;
-  uint8_t index = 0;
-  protocol_communication_state_t state = WAITING_FIRST_HEAD_CHAR;
+typedef int32_t (*function_int32)();
+typedef uint8_t (*function_uint8)();
 
-  static servo_message_t servo_message;
+typedef struct
+{
+  function_uint8 UART_char_available_function;
+  function_int32 UART_get_char_function;
+  uint8_t data_buffer;
+  uint8_t payload_size;
+  uint8_t index;
+  protocol_communication_state_t state;
+  servo_message_t servo_message;
+}Communication_task_control;
+
+void UART0_task(void *arg);
+void UART1_task(void *arg);
+void communication_read_messages(Communication_task_control *task_control);
+
+void communication_thread_init()
+{
+  UART0_thread_id = osThreadNew(UART0_task, NULL, NULL);
+  UART1_thread_id = osThreadNew(UART1_task, NULL, NULL);
+}
+
+void UART0_task(void *arg)
+{
+  static Communication_task_control uart0_task_control = {
+    .UART_char_available_function = UART0_char_available,
+    .UART_get_char_function = UART0_get_byte,
+    .data_buffer = 0,
+    .payload_size = 0,
+    .index = 0,
+    .state = WAITING_FIRST_HEAD_CHAR
+  };
 
   while(1)
   {
-    // If there is data to be read
-    if(UART1_char_available())
+    communication_read_messages(&uart0_task_control);
+  }
+}
+
+void UART1_task(void *arg)
+{
+  static Communication_task_control uart1_task_control = {
+    .UART_char_available_function = UART1_char_available,
+    .UART_get_char_function = UART1_get_byte,
+    .data_buffer = 0,
+    .payload_size = 0,
+    .index = 0,
+    .state = WAITING_FIRST_HEAD_CHAR
+  };
+
+  while(1)
+  {
+    communication_read_messages(&uart1_task_control);
+  }
+}
+
+void communication_read_messages(Communication_task_control *task_control)
+{
+  servo_message_t *servo_message = &(task_control->servo_message);
+  // If there is data to be read
+    if(task_control->UART_char_available_function())
     {
-       data_buffer = (uint8_t)(UART1_get_byte() & 0x000000FF);
+       task_control->data_buffer = (uint8_t)(task_control->UART_get_char_function() & 0x000000FF);
       
-       switch(state)
+       switch(task_control->state)
        {
           case WAITING_FIRST_HEAD_CHAR:
           {
-            if(data_buffer == START_MESSAGE_FLAG)
+            if(task_control->data_buffer == START_MESSAGE_FLAG)
             {
                 // First message head is valid, change to wait second valid char state
-                state = WAITING_SECOND_HEAD_CHAR;
+                task_control->state = WAITING_SECOND_HEAD_CHAR;
             }
             break;
           }
           
           case WAITING_SECOND_HEAD_CHAR:
           {
-            if(data_buffer == START_MESSAGE_FLAG)
+            if(task_control->data_buffer == START_MESSAGE_FLAG)
             {
               // Second message head is valid, change to wait spayload char state
-              state = WAITING_PAYLOAD_CHAR;
+              task_control->state = WAITING_PAYLOAD_CHAR;
             }
             else
             {
               // Second head char is invalid, back to first state
-              state = WAITING_FIRST_HEAD_CHAR;
+              task_control->state = WAITING_FIRST_HEAD_CHAR;
             }
             break;
           }
 
           case WAITING_PAYLOAD_CHAR:
           {
-            if(data_buffer > 0 && data_buffer <= MAX_PAYLOAD_SIZE)
+            if(task_control->data_buffer > 0 && task_control->data_buffer <= MAX_PAYLOAD_SIZE)
             {
               // Payload is valid, change to waiting useful data state 
-              state = WAITING_DATA_CHAR;
-              payload_size = data_buffer;
-              index = 0;
+              task_control->state = WAITING_DATA_CHAR;
+              task_control->payload_size = task_control->data_buffer;
+              task_control->index = 0;
             }
             else
             {
               // Payload char is invalid, back to first state
-              state = WAITING_FIRST_HEAD_CHAR;
+              task_control->state = WAITING_FIRST_HEAD_CHAR;
             }
             break;
           }
 
           case WAITING_DATA_CHAR:
           {
-            if(index < payload_size)
+            if(task_control->index < task_control->payload_size)
             {
               // Saves received useful char into the buffer
-              servo_message.data[index] = data_buffer;
-              index++;
+              servo_message->data[task_control->index] = task_control->data_buffer;
+              task_control->index++;
 
               // Last data byte
-              if(index == payload_size)
+              if(task_control->index == task_control->payload_size)
               {
                 // When the index is equal to the payload, change to wait first ending char state
-                state = WAITING_FIRST_END_CHAR;
+                task_control->state = WAITING_FIRST_END_CHAR;
               }
             }
             else
             {
               // If, for some reason, state wasn't change with last data, change to wait first ending char state
-              state = WAITING_FIRST_END_CHAR;
+              task_control->state = WAITING_FIRST_END_CHAR;
             }
             break;
           }
 
           case WAITING_FIRST_END_CHAR:
           {
-             if(data_buffer == END_MESSAGE_FLAG)
+             if(task_control->data_buffer == END_MESSAGE_FLAG)
             {
               // First ending char is valid, change to wait second valid char state
-              state = WAITING_SECOND_END_CHAR;
+              task_control->state = WAITING_SECOND_END_CHAR;
             }
             else
             {
               // First ending char is not valid, change to first state
-              state = WAITING_FIRST_HEAD_CHAR;
+              task_control->state = WAITING_FIRST_HEAD_CHAR;
             }
             break;
           }
 
           case WAITING_SECOND_END_CHAR:
           {
-            if(data_buffer == END_MESSAGE_FLAG)
+            if(task_control->data_buffer == END_MESSAGE_FLAG)
             {
               // Second ending char is valid, send the buffered message in the queue
-              servo_message.size = payload_size;
-              osMessageQueuePut(servo_message_queue, &servo_message, 0, NULL);
+              servo_message->size = task_control->payload_size;
+              osMessageQueuePut(servo_message_queue, servo_message, 0, NULL);
             }
 
             // Back to first state
-            state = WAITING_FIRST_HEAD_CHAR;
+            task_control->state = WAITING_FIRST_HEAD_CHAR;
 
             break;
           }
           default:
             // To avoid deadlock
-            state = WAITING_FIRST_HEAD_CHAR;
+            task_control->state = WAITING_FIRST_HEAD_CHAR;
           break;
        }    
     }
-  }
 }

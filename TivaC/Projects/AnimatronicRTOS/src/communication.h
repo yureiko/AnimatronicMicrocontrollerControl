@@ -1,6 +1,6 @@
 #ifndef COMMUNICATION_H
 #define COMMUNICATION_H
 
-void UART_task(void *arg);
+void communication_thread_init();
 
 #endif

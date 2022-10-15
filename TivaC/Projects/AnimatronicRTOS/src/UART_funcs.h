@@ -5,7 +5,6 @@
 
 void UART_init();
 
-
 extern uint32_t SystemCoreClock; 
 
 void UART0_send_byte(const uint8_t *pui8Buffer, uint32_t ui32Count);
