@@ -1,3 +1,15 @@
+/**
+ * This file is part of Animatronic Control project which is released under GPLv3 license.
+ * See file LICENSE.txt or go to https://www.gnu.org/licenses/gpl-3.0.txt for full license details.
+ */
+
+/**
+ * File: PWM_funcs.h
+ * Brief: Manage all the 8 PWM channels from TIVA C TM4C1294 microcontroller
+ * Author: Yuri Andreiko
+ * Year: 2022
+*/
+
 #ifndef PWM_FUNCS_H
 #define PWM_FUNCS_H
 

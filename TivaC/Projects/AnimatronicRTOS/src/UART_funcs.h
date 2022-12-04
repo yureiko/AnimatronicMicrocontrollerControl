@@ -1,3 +1,15 @@
+/**
+ * This file is part of Animatronic Control project which is released under GPLv3 license.
+ * See file LICENSE.txt or go to https://www.gnu.org/licenses/gpl-3.0.txt for full license details.
+ */
+
+/**
+ * File: UART_funcs.h
+ * Brief: Manages UART communication
+ * Author: Yuri Andreiko
+ * Year: 2022
+*/
+
 #ifndef UART_FUNCS_H
 #define	UART_FUNCS_H
 
